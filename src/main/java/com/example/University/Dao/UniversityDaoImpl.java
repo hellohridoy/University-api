@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ public class UniversityDaoImpl implements UniversityDao {
     public List<University> getUniversityBySearch(String searchParams) {
         String sql = """
            
-                SELECT
+           SELECT
               *
            FROM
                university
