@@ -1,8 +1,10 @@
 package com.example.University.controller;
 
 
+import com.example.University.Dto.UniversityOverviewDto;
 import com.example.University.Dto.UniversityRatingDto;
 import com.example.University.entity.University;
+import com.example.University.service.TeacherService;
 import com.example.University.service.UniversityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class UniversityRestController {
 
     private final UniversityService universityService;
+    private final TeacherService teacherService;
     @PostMapping("/v1/university/university-infos")
     public ResponseEntity<University> createUniversity(@RequestBody University university) {
         return ResponseEntity.ok(universityService.saveUniversity(university));
@@ -95,5 +98,10 @@ public class UniversityRestController {
         } catch (Exception e) {
             throw new RuntimeException("Unable to fetch member categories.", e);
         }
+    }
+
+    @GetMapping("/worldwide")
+    public List<UniversityOverviewDto> getUniversityPositionWorldWide() {
+        return teacherService.getUniversityOverview();
     }
 }

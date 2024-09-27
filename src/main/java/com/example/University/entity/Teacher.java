@@ -19,13 +19,13 @@ public class Teacher extends AbstractBaseEntity<Long> {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String teachersName;
 
     @Column(nullable = false)
-    private String email;
+    private String teachersEmail;
 
     @Column(nullable = false)
-    private String phoneNumber;
+    private String teacherPhoneNumber;
 
     @Column(nullable = false)
     private String department;

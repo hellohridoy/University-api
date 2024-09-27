@@ -1,7 +1,9 @@
 package com.example.University.service;
 
 import com.example.University.Dao.TeacherDao;
+import com.example.University.Dao.UniversityDao;
 import com.example.University.Dto.SubjectDto;
+import com.example.University.Dto.UniversityOverviewDto;
 import com.example.University.entity.Teacher;
 import com.example.University.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final TeacherDao teacherDao;
+    private final UniversityDao universityDao;
     @Override
     public Teacher saveTeacher(Teacher teacher) {
         return teacherRepository.save(teacher);
@@ -25,9 +28,9 @@ public class TeacherServiceImpl implements TeacherService {
         Optional<Teacher> existingTeacher = teacherRepository.findById(id);
         if (existingTeacher.isPresent()) {
             Teacher updatedTeacher = existingTeacher.get();
-            updatedTeacher.setName(teacher.getName());
-            updatedTeacher.setEmail(teacher.getEmail());
-            updatedTeacher.setPhoneNumber(teacher.getPhoneNumber());
+            updatedTeacher.setTeachersName(teacher.getTeachersName());
+            updatedTeacher.setTeachersEmail(teacher.getTeachersEmail());
+            updatedTeacher.setTeacherPhoneNumber(teacher.getTeacherPhoneNumber());
             updatedTeacher.setDepartment(teacher.getDepartment());
             updatedTeacher.setSpecialization(teacher.getSpecialization());
             updatedTeacher.setHireDate(teacher.getHireDate());
@@ -68,5 +71,10 @@ public class TeacherServiceImpl implements TeacherService {
     public List<SubjectDto> getAllSubject() {
 
         return teacherDao.getAllUniqueSubjects();
+    }
+
+    @Override
+    public List<UniversityOverviewDto> getUniversityOverview() {
+        return universityDao.getUniversityPositionWordWide();
     }
 }

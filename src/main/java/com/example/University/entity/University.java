@@ -23,22 +23,23 @@ public class University extends AbstractBaseEntity<Long> {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String universityName;
 
     @Column(nullable = false)
-    private String address;
+    private String  universityAddress;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UniversityType universityType;
 
-    private double rating;
+    @Column(name = "university_rating", nullable = false)
+    private Double universityRating;
 
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String  universityDescription;
 
     // Store only the image path, actual image saved in file system
-    private String image;
+    private String universityImage;
 
     private LocalDate startingDate;
 
