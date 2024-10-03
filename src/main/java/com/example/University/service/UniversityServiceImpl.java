@@ -3,6 +3,7 @@ package com.example.University.service;
 import com.example.University.Dao.UniversityDao;
 import com.example.University.Dto.UniversityRatingDto;
 import com.example.University.entity.University;
+import com.example.University.enums.UniversityType;
 import com.example.University.repository.UniversityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -57,5 +58,12 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public List<UniversityRatingDto> getUniversityInfoByRatings() {
         return universityDao.getUniversityRating();
+    }
+
+
+    //Need Dto for better required response
+    @Override
+    public List<University> getUniversityByTypeAndRatings(UniversityType universityType,Double universityRatings) {
+        return universityDao.getUniversityDetailsByType(universityType,universityRatings);
     }
 }

@@ -3,6 +3,7 @@ package com.example.University.entity;
 import com.example.University.BaseEntityRequirement.AbstractBaseEntity;
 import com.example.University.enums.UniversityType;
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -14,8 +15,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@Data
 @Entity
+@Data
 @Table(name = "university")
 public class University extends AbstractBaseEntity<Long> {
     @Id

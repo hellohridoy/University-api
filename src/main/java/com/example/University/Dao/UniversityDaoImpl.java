@@ -81,36 +81,76 @@ public class UniversityDaoImpl implements UniversityDao {
         return jdbcTemplate.query(sql, this::universityInfo);
     }
 
+    @Override
+    public List<University> getUniversityDetailsByType(UniversityType universityType, double universityRatings) {
+        return List.of();
+    }
+
+    @Override
+    public List<University> getUniversityDetailsByType(UniversityType universityType, Double universityRatings) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM university WHERE 1=1");
+
+        // Map to hold parameters
+        Map<String, Object> params = new HashMap<>();
+
+        // Add filtering by universityType if provided
+        if (universityType != null) {
+            sql.append(" AND university_type = :university_type");
+            params.put("university_type", universityType.name());
+        }
+
+        // Add filtering by universityRatings if provided
+        if (universityRatings != null) {
+            sql.append(" AND university_rating >= :university_rating");
+            params.put("university_rating", universityRatings);
+        }
+
+        return jdbcTemplate.query(sql.toString(), params, this::UniversityByTypeMapper);
+    }
+
+    private University UniversityByTypeMapper(ResultSet rs, int rowNum) throws SQLException {
+        University university = new University();
+        university.setId(rs.getLong("id"));
+        university.setUniversityName(rs.getString("university_name"));
+        university.setUniversityAddress(rs.getString("university_address"));
+        university.setUniversityType(UniversityType.valueOf(rs.getString("university_type").toUpperCase()));
+        university.setUniversityDescription(rs.getString("university_description"));
+        university.setUniversityImage(rs.getString("university_image"));
+        university.setUniversityRating(rs.getDouble("university_rating"));
+        return university;
+    }
+
+
     public UniversityOverviewDto universityInfo(ResultSet rs, int rowNum) throws SQLException {
-        UniversityOverviewDto overview = new UniversityOverviewDto();
-        overview.setId(rs.getInt("id"));
-        overview.setUniversity_name(rs.getString("university_name"));
-        overview.setDepartment(rs.getString("department"));
-        overview.setAddress(rs.getString("university_address"));
-        overview.setUniversity_rating(String.valueOf(rs.getDouble("university_rating")));
-        overview.setUniversity_type(rs.getString("university_type"));
-        overview.setTeachers_name(rs.getString("teachers_name"));
-        overview.setSpecialization(rs.getString("specialization"));
+        UniversityOverviewDto university = new UniversityOverviewDto();
+        university.setId(rs.getInt("id"));
+        university.setUniversity_name(rs.getString("university_name"));
+        university.setDepartment(rs.getString("department"));
+        university.setAddress(rs.getString("university_address"));
+        university.setUniversity_rating(String.valueOf(rs.getDouble("university_rating")));
+        university.setUniversity_type(rs.getString("university_type"));
+        university.setTeachers_name(rs.getString("teachers_name"));
+        university.setSpecialization(rs.getString("specialization"));
 
         // Handle JSONB field (qualifications)
         ObjectMapper objectMapper = new ObjectMapper();
         String qualificationsJson = rs.getString("qualifications");
 
-        // Check if qualificationsJson is not null or empty
-        if (qualificationsJson != null && !qualificationsJson.trim().isEmpty()) {
-            try {
-                Map<String, Object> qualifications = objectMapper.readValue(qualificationsJson, new TypeReference<Map<String, Object>>() {});
-                overview.setQualifications(qualifications);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Error parsing qualifications JSON", e);
+            // Check if qualificationsJson is not null or empty
+            if (qualificationsJson != null && !qualificationsJson.trim().isEmpty()) {
+                try {
+                    Map<String, Object> qualifications = objectMapper.readValue(qualificationsJson, new TypeReference<Map<String, Object>>() {});
+                    university.setQualifications(qualifications);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException("Error parsing qualifications JSON", e);
+                }
+            } else {
+                university.setQualifications(null); // or an empty map, if appropriate
             }
-        } else {
-            overview.setQualifications(null); // or an empty map, if appropriate
-        }
 
-        overview.setHire_date(String.valueOf(rs.getDate("hire_date")));
+        university.setHire_date(String.valueOf(rs.getDate("hire_date")));
 
-        return overview;
+        return university;
     }
 
 

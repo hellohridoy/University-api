@@ -2,6 +2,7 @@ package com.example.University.service;
 
 import com.example.University.Dto.UniversityRatingDto;
 import com.example.University.entity.University;
+import com.example.University.enums.UniversityType;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface UniversityService {
     List<University> getUniversitiesBySearch(String searchParams);
 
     List<UniversityRatingDto>getUniversityInfoByRatings();
+
+    List<University>getUniversityByTypeAndRatings(UniversityType universityType,Double universityRatings);
 }

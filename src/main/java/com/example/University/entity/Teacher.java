@@ -2,6 +2,7 @@ package com.example.University.entity;
 
 import com.example.University.BaseEntityRequirement.AbstractBaseEntity;
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;

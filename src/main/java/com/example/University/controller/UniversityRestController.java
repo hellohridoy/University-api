@@ -4,6 +4,7 @@ package com.example.University.controller;
 import com.example.University.Dto.UniversityOverviewDto;
 import com.example.University.Dto.UniversityRatingDto;
 import com.example.University.entity.University;
+import com.example.University.enums.UniversityType;
 import com.example.University.service.TeacherService;
 import com.example.University.service.UniversityService;
 import lombok.RequiredArgsConstructor;
@@ -100,8 +101,24 @@ public class UniversityRestController {
         }
     }
 
-    @GetMapping("/worldwide")
+    @GetMapping("/v1/university/search-university-infos/world-wide")
     public List<UniversityOverviewDto> getUniversityPositionWorldWide() {
         return teacherService.getUniversityOverview();
+    }
+
+    @GetMapping("/v1/university/search-university-infos/by-university-type-and-ratings")
+    public ResponseEntity<List<University>> getUniversityDetails(
+            @RequestParam(required = false) String universityType,
+            @RequestParam(required = false) Double universityRatings) {
+
+
+        // Call service layer with parameters
+        List<University> universities = universityService.getUniversityByTypeAndRatings(UniversityType.valueOf(universityType), universityRatings);
+
+        if (universities.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(universities);
     }
 }
