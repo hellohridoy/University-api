@@ -1,5 +1,6 @@
 package com.example.University.controller;
 
+import com.example.University.Dto.StudentInfoBySubjectsDto;
 import com.example.University.Dto.StudentResultDto;
 import com.example.University.entity.Student;
 import com.example.University.service.StudentService;
@@ -43,8 +44,15 @@ public class StudentController {
     }
 
     @GetMapping("/v1/student/student-infos/results")
-    public List<StudentResultDto> getAllStudentsResults() {
-       return studentService.getAllStudentResults();
+    public List<StudentResultDto> getAllStudentsResults(
+            @RequestParam(required = false) String searchParams) {
+       return studentService.getAllStudentResults(searchParams);
+    }
+
+    @GetMapping("/v1/student/student-infos/search-by-subject")
+    public List<StudentInfoBySubjectsDto> getStudentInfoBySubject(
+            @RequestParam(required = false) String searchParams) {
+        return studentService.getStudentBySubjects(searchParams);
     }
 
 }

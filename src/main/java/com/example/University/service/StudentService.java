@@ -1,5 +1,6 @@
 package com.example.University.service;
 
+import com.example.University.Dto.StudentInfoBySubjectsDto;
 import com.example.University.Dto.StudentResultDto;
 import com.example.University.entity.Student;
 
@@ -15,5 +16,7 @@ public interface StudentService {
 
     void deleteStudentById(Long id);
 
-    List<StudentResultDto> getAllStudentResults();
+    List<StudentResultDto> getAllStudentResults(String studentName);
+
+    List<StudentInfoBySubjectsDto> getStudentBySubjects(String searchParams);
 }

@@ -49,7 +49,7 @@ public class TeacherRestController {
         return ResponseEntity.ok(teachers);
     }
 
-    @GetMapping("/v1/teacher/total-monthly-salary")
+    @GetMapping("/v1/university/teacher-infos/total-monthly-salary")
     public Double getAllTeachersMonthlyPaidByUniversity() {
         try {
             // Call the service method to get the total monthly salary

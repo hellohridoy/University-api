@@ -27,6 +27,7 @@ public class UniversityRestController {
 
     private final UniversityService universityService;
     private final TeacherService teacherService;
+
     @PostMapping("/v1/university/university-infos")
     public ResponseEntity<University> createUniversity(@RequestBody University university) {
         return ResponseEntity.ok(universityService.saveUniversity(university));
@@ -46,7 +47,6 @@ public class UniversityRestController {
         return ResponseEntity.ok(university);
     }
 
-
     @PutMapping("/v1/university/universities-infos/{id}")
     public ResponseEntity<University> updateUniversity(@PathVariable Long id, @RequestBody University updatedUniversity) {
         University university = universityService.getUniversityById(id);
@@ -57,7 +57,7 @@ public class UniversityRestController {
         return ResponseEntity.ok(universityService.saveUniversity(updatedUniversity));
     }
 
-    @DeleteMapping("/v1/university/delete-university-infos/{id}")
+    @DeleteMapping("/v1/university/university-infos/{id}")
     public ResponseEntity<String> deleteUniversity(@PathVariable Long id) {
         boolean isDeleted = universityService.deleteUniversity(id);
 
@@ -67,9 +67,6 @@ public class UniversityRestController {
             return ResponseEntity.ok("University with ID " + id + " was not found");
         }
     }
-
-
-
 
     @PostMapping("/uploadImage")
     public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile imageFile) {
@@ -82,9 +79,10 @@ public class UniversityRestController {
         }
     }
 
-    @GetMapping("/v1/university/search-university-infos")
+    @GetMapping("/v1/university/university-infos/by-search")
     public List<University> fetchUniversityInfosBySearched(
-            @RequestParam(required = false) Optional<String> searchParams) {
+            @RequestParam(required = false) Optional<String> searchParams)
+    {
         try {
             return universityService.getUniversitiesBySearch(searchParams.orElse(""));
         } catch (Exception e) {
@@ -92,7 +90,7 @@ public class UniversityRestController {
         }
     }
 
-    @GetMapping("/v1/university/fetch-university-infos-by-ratings")
+    @GetMapping("/v1/university/university-infos/university-ratings")
     public List<UniversityRatingDto> fetchUniversityInfosBySearched() {
         try {
             return universityService.getUniversityInfoByRatings();
@@ -109,16 +107,15 @@ public class UniversityRestController {
     @GetMapping("/v1/university/search-university-infos/by-university-type-and-ratings")
     public ResponseEntity<List<University>> getUniversityDetails(
             @RequestParam(required = false) String universityType,
-            @RequestParam(required = false) Double universityRatings) {
-
-
-        // Call service layer with parameters
-        List<University> universities = universityService.getUniversityByTypeAndRatings(UniversityType.valueOf(universityType), universityRatings);
+            @RequestParam(required = false) Double universityRatings)
+    {
+        List<University> universities = universityService.getUniversityByTypeAndRatings(
+                UniversityType.valueOf(universityType),
+                universityRatings);
 
         if (universities.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-
         return ResponseEntity.ok(universities);
     }
 }

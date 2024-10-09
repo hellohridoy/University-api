@@ -17,7 +17,6 @@ public interface UniversityDao {
 
        List<UniversityOverviewDto> getUniversityPositionWordWide();
 
-
        List<University> getUniversityDetailsByType(UniversityType universityType, double universityRatings);
 
        List<University> getUniversityDetailsByType(UniversityType universityType, Double universityRatings);
