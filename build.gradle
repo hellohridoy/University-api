@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.google.cloud.tools.jib' version '3.3.1' // For Docker
+	id 'jacoco' // For code coverage
 }
 
 group = 'com.example'
@@ -13,12 +15,6 @@ java {
 	}
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 repositories {
 	mavenCentral()
 }
@@ -26,14 +22,57 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-devtools' // For auto-restart
+	implementation 'org.springframework.boot:spring-boot-starter-actuator' // For monitoring
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.18.0-rc1'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.0-rc1' // Updated to use standard format
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+bootJar {
+	manifest {
+		attributes(
+				'Main-Class': 'com.example.UniversityApplication' // Ensure this is the correct main class
+		)
+	}
+}
+
+// Jib configuration
+jib {
+	from {
+		image = 'eclipse-temurin:21-jre-alpine' // JDK image
+	}
+	to {
+		image = 'your-dockerhub-username/university-api' // Update with your Docker Hub username
+		tags = ['latest']
+	}
+	container {
+		ports = ['8080'] // Expose port 8080
+	}
+}
+
+// JaCoCo configuration
+jacoco {
+	toolVersion = "0.8.8" // Ensure you have the latest compatible version
+}
+
+// Ensure JaCoCo report runs after tests
+tasks.test {
+	finalizedBy tasks.jacocoTestReport
+}
+
+// Configuration for the JaCoCo report
+tasks.jacocoTestReport {
+	dependsOn tasks.test // Ensure tests run before the report is generated
+	reports {
+		xml.required = true // Updated to use 'required' instead of 'enabled'
+		html.required = true // Updated to use 'required' instead of 'enabled'
+	}
 }
