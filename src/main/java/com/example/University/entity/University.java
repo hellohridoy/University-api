@@ -13,6 +13,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -49,4 +50,10 @@ public class University extends AbstractBaseEntity<Long> {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> value;
+
+  @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Teacher> teachers;
+
+  @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Student> students;
 }
