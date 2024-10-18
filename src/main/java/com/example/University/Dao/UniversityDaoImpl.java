@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * University: Dao Implement.
+ * University: Dao Implementation.
  */
 @Log4j2
 @Service
@@ -29,18 +29,12 @@ public class UniversityDaoImpl implements UniversityDao {
     @Override
     public List<University> getUniversityBySearch(String searchParams) {
         String sql = """
-           
-                SELECT
-               *
-           FROM
-               university
-           WHERE
-               (university.university_name ILIKE CONCAT('%', :searchParams, '%') OR
-                university.university_address ILIKE CONCAT('%', :searchParams, '%') OR
-                university_type ILIKE CONCAT('%', :searchParams, '%') OR
-                university_rating::text ILIKE CONCAT('%', :searchParams, '%') OR
-                university_description ILIKE CONCAT('%', :searchParams, '%'));
-          
+            SELECT * FROM university
+            WHERE university_name ILIKE CONCAT('%', :searchParams, '%')
+            OR university_address ILIKE CONCAT('%', :searchParams, '%')
+            OR university_type ILIKE CONCAT('%', :searchParams, '%')
+            OR university_rating::text ILIKE CONCAT('%', :searchParams, '%')
+            OR university_description ILIKE CONCAT('%', :searchParams, '%');
             """;
 
         Map<String, String> params = new HashMap<>();
@@ -51,9 +45,9 @@ public class UniversityDaoImpl implements UniversityDao {
 
     @Override
     public List<UniversityRatingDto> getUniversityRating() {
-       String sql = """
-               select * from university where rating>:rating;
-               """;
+        String sql = """
+            SELECT * FROM university WHERE university_rating > :rating;
+            """;
         Map<String, Double> params = new HashMap<>();
         params.put("rating", 4.50);
         return jdbcTemplate.query(sql, params, this::universityRatingMapper);
@@ -62,22 +56,19 @@ public class UniversityDaoImpl implements UniversityDao {
     @Override
     public List<UniversityOverviewDto> getUniversityPositionWordWide() {
         String sql = """
-                    SELECT
-                        u .id,
-                        u.university_name,
-                        u.university_address,
-                        t.department,
-                        u.university_rating,
-                        u.university_type,
-                        t.teachers_name,
-                        t.specialization,
-                        t.qualifications,
-                        t.hire_date
-                    FROM
-                        university u
-                            LEFT JOIN
-                        teacher t ON u.id = t.id;
-                """;
+            SELECT
+                u.id,
+                u.university_name,
+                u.university_address,
+                u.university_rating,
+                u.university_type,
+                t.teachers_name,
+                t.specialization,
+                t.qualifications,
+                t.hire_date
+            FROM university u
+            LEFT JOIN teacher t ON u.id = t.university_id;
+            """;
 
         return jdbcTemplate.query(sql, this::universityInfo);
     }
@@ -106,10 +97,10 @@ public class UniversityDaoImpl implements UniversityDao {
             params.put("university_rating", universityRatings);
         }
 
-        return jdbcTemplate.query(sql.toString(), params, this::UniversityByTypeMapper);
+        return jdbcTemplate.query(sql.toString(), params, this::universityByTypeMapper);
     }
 
-    private University UniversityByTypeMapper(ResultSet rs, int rowNum) throws SQLException {
+    private University universityByTypeMapper(ResultSet rs, int rowNum) throws SQLException {
         University university = new University();
         university.setId(rs.getLong("id"));
         university.setUniversityName(rs.getString("university_name"));
@@ -121,12 +112,11 @@ public class UniversityDaoImpl implements UniversityDao {
         return university;
     }
 
-
     public UniversityOverviewDto universityInfo(ResultSet rs, int rowNum) throws SQLException {
         UniversityOverviewDto university = new UniversityOverviewDto();
         university.setId(rs.getInt("id"));
         university.setUniversity_name(rs.getString("university_name"));
-        university.setDepartment(rs.getString("department"));
+        university.setDepartment(rs.getString("university_department"));
         university.setAddress(rs.getString("university_address"));
         university.setUniversity_rating(String.valueOf(rs.getDouble("university_rating")));
         university.setUniversity_type(rs.getString("university_type"));
@@ -137,24 +127,21 @@ public class UniversityDaoImpl implements UniversityDao {
         ObjectMapper objectMapper = new ObjectMapper();
         String qualificationsJson = rs.getString("qualifications");
 
-            // Check if qualificationsJson is not null or empty
-            if (qualificationsJson != null && !qualificationsJson.trim().isEmpty()) {
-                try {
-                    Map<String, Object> qualifications = objectMapper.readValue(qualificationsJson, new TypeReference<Map<String, Object>>() {});
-                    university.setQualifications(qualifications);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException("Error parsing qualifications JSON", e);
-                }
-            } else {
-                university.setQualifications(null); // or an empty map, if appropriate
+        if (qualificationsJson != null && !qualificationsJson.trim().isEmpty()) {
+            try {
+                Map<String, Object> qualifications = objectMapper.readValue(qualificationsJson, new TypeReference<>() {});
+                university.setQualifications(qualifications);
+            } catch (JsonProcessingException e) {
+                log.error("Error parsing qualifications JSON", e);
             }
+        } else {
+            university.setQualifications(Collections.emptyMap());
+        }
 
-        university.setHire_date(String.valueOf(rs.getDate("hire_date")));
+        university.setHire_date(rs.getDate("hire_date").toString());
 
         return university;
     }
-
-
 
     private University mapRow(ResultSet rs, int rowNum) throws SQLException {
         try {
@@ -166,35 +153,28 @@ public class UniversityDaoImpl implements UniversityDao {
             String universityTypeStr = rs.getString("university_type");
             UniversityType universityType = UniversityType.valueOf(universityTypeStr.toUpperCase());
             university.setUniversityType(universityType);
-            university.setUniversityRating(rs.getDouble("university_rating")); // Assuming rating is a double
+            university.setUniversityRating(rs.getDouble("university_rating"));
             university.setUniversityDescription(rs.getString("university_description"));
             return university;
-        }catch (SQLException e) {
-            log.error("Error mapping row to UniversityMappings", e);
+        } catch (SQLException e) {
+            log.error("Error mapping row to University entity", e);
+            throw e; // Rethrow to properly handle failure cases
         }
-        return null;
-
     }
 
     private UniversityRatingDto universityRatingMapper(ResultSet rs, int rowNum) throws SQLException {
         try {
             UniversityRatingDto universityRatingDto = new UniversityRatingDto();
             universityRatingDto.setId(rs.getLong("id"));
-            universityRatingDto.setUniversityName(rs.getString("name"));
-            universityRatingDto.setAddress(rs.getString("address"));
-            // Convert string to Enum
-            String universityTypeStr = rs.getString("university_type");
-            UniversityType universityType = UniversityType.valueOf(universityTypeStr.toUpperCase());
-
-            universityRatingDto.setRatings(rs.getDouble("rating")); // Assuming rating is a double
-            universityRatingDto.setDescription(rs.getString("description"));
-
+            universityRatingDto.setUniversityName(rs.getString("university_name"));
+            universityRatingDto.setAddress(rs.getString("university_address"));
+            universityRatingDto.setRatings(rs.getDouble("university_rating"));
+            universityRatingDto.setDescription(rs.getString("university_description"));
             return universityRatingDto;
-        }catch (SQLException e) {
-            log.error("Error mapping row to UniversityMappings", e);
+        } catch (SQLException e) {
+            log.error("Error mapping row to UniversityRatingDto", e);
+            throw e; // Rethrow to handle errors properly
         }
-        return null;
-
     }
 
 }
