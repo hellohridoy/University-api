@@ -30,16 +30,17 @@ public class UniversityDaoImpl implements UniversityDao {
     public List<University> getUniversityBySearch(String searchParams) {
         String sql = """
            
-           SELECT
-              *
+                SELECT
+               *
            FROM
                university
            WHERE
-               (name ILIKE CONCAT('%', :searchParams, '%') OR
-                address ILIKE CONCAT('%', :searchParams, '%') OR
+               (university.university_name ILIKE CONCAT('%', :searchParams, '%') OR
+                university.university_address ILIKE CONCAT('%', :searchParams, '%') OR
                 university_type ILIKE CONCAT('%', :searchParams, '%') OR
-                rating::text ILIKE CONCAT('%', :searchParams, '%') OR
-                description ILIKE CONCAT('%', :searchParams, '%'));
+                university_rating::text ILIKE CONCAT('%', :searchParams, '%') OR
+                university_description ILIKE CONCAT('%', :searchParams, '%'));
+          
             """;
 
         Map<String, String> params = new HashMap<>();
@@ -159,14 +160,14 @@ public class UniversityDaoImpl implements UniversityDao {
         try {
             University university = new University();
             university.setId(rs.getLong("id"));
-            university.setUniversityName(rs.getString("name"));
-            university.setUniversityAddress(rs.getString("address"));
+            university.setUniversityName(rs.getString("university_name"));
+            university.setUniversityAddress(rs.getString("university_address"));
             // Convert string to Enum
             String universityTypeStr = rs.getString("university_type");
             UniversityType universityType = UniversityType.valueOf(universityTypeStr.toUpperCase());
             university.setUniversityType(universityType);
-            university.setUniversityRating(rs.getDouble("rating")); // Assuming rating is a double
-            university.setUniversityDescription(rs.getString("description"));
+            university.setUniversityRating(rs.getDouble("university_rating")); // Assuming rating is a double
+            university.setUniversityDescription(rs.getString("university_description"));
             return university;
         }catch (SQLException e) {
             log.error("Error mapping row to UniversityMappings", e);
