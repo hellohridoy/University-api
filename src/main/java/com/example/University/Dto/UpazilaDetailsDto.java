@@ -12,4 +12,5 @@ public class UpazilaDetailsDto {
    private String upazilaName;
    private String upazilaCode;
    private String upazilaNumber;
+
 }

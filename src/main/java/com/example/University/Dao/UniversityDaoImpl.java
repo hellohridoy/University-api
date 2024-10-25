@@ -78,27 +78,27 @@ public class UniversityDaoImpl implements UniversityDao {
         return List.of();
     }
 
-    @Override
-    public List<University> getUniversityDetailsByType(UniversityType universityType, Double universityRatings) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM university WHERE 1=1");
+  @Override
+  public List<University> getUniversityDetailsByType(UniversityType universityType, Double universityRatings) {
+    StringBuilder sql = new StringBuilder("SELECT * FROM university WHERE 1=1");
 
-        // Map to hold parameters
-        Map<String, Object> params = new HashMap<>();
+    // Map to hold parameters
+    Map<String, Object> params = new HashMap<>();
 
-        // Add filtering by universityType if provided
-        if (universityType != null) {
-            sql.append(" AND university_type = :university_type");
-            params.put("university_type", universityType.name());
-        }
-
-        // Add filtering by universityRatings if provided
-        if (universityRatings != null) {
-            sql.append(" AND university_rating >= :university_rating");
-            params.put("university_rating", universityRatings);
-        }
-
-        return jdbcTemplate.query(sql.toString(), params, this::universityByTypeMapper);
+    // Add filtering by universityType if provided
+    if (universityType != null) {
+      sql.append(" AND university_type = :university_type");
+      params.put("university_type", universityType.name());
     }
+
+    // Add filtering by universityRatings if provided
+    if (universityRatings != null) {
+      sql.append(" AND university_rating >= :university_rating");
+      params.put("university_rating", universityRatings);
+    }
+
+    return jdbcTemplate.query(sql.toString(), params, this::universityByTypeMapper);
+  }
 
     private University universityByTypeMapper(ResultSet rs, int rowNum) throws SQLException {
         University university = new University();
