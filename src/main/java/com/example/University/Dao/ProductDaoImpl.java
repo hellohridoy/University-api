@@ -1,6 +1,7 @@
 package com.example.University.Dao;
 
 import com.example.University.entity.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,13 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class ProductDaoImpl implements ProductDao {
 
   private final JdbcTemplate jdbcTemplate;
-
-  public ProductDaoImpl(JdbcTemplate jdbcTemplate) {
-    this.jdbcTemplate = jdbcTemplate;
-  }
 
   @Override
   public List<Product> getAll() {
