@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UniversityStudentInfoDto {
 
-  private Long studentId;
+  private Integer studentId;
 
   private String studentName;
 

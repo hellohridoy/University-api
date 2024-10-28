@@ -13,8 +13,9 @@ public class UniversityStudentCourseEnrollMentServiceImpl implements UniversityS
   private final UniversityStudentCourseEnrollMentDao universityStudentCourseEnrollMentDao;
 
   @Override
-  public List<UniversityStudentInfoDto> getAllStudentInfo(String searchParams) {
-    return universityStudentCourseEnrollMentDao.getAllStudentInfo(searchParams);
+  public List<UniversityStudentInfoDto> getAllStudentInfo(Integer studentId, String name, String courseName,
+                                                          String instructorName, String address, String city) {
+    return universityStudentCourseEnrollMentDao.searchStudents(studentId,name,courseName,instructorName,address,city);
 
   }
 }

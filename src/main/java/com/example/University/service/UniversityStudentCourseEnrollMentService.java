@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface UniversityStudentCourseEnrollMentService{
-  List<UniversityStudentInfoDto> getAllStudentInfo(String searchParams);
+  List<UniversityStudentInfoDto> getAllStudentInfo(Integer studentId, String name, String courseName,
+                                                   String instructorName, String address, String city);
 
 }
