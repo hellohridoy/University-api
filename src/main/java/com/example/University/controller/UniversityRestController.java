@@ -23,6 +23,7 @@ import java.util.Optional;
  */
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class UniversityRestController {
 
     private final UniversityService universityService;
