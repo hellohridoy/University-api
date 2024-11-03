@@ -43,13 +43,11 @@ public class DashBoardDaoImpl implements DashBoardDao {
       DashBoardDepartmentDto dto = new DashBoardDepartmentDto();
       dto.setDepartmentName(rs.getString("department_name"));
       dto.setDepartmentDescription(rs.getString("department_description"));
-
       List<DashBoardDepartmentDto.SubjectDto> subjects = new ArrayList<>();
       DashBoardDepartmentDto.SubjectDto subjectDto = new DashBoardDepartmentDto.SubjectDto();
       subjectDto.setSubjectName(rs.getString("subject_name"));
       subjectDto.setSubjectDescription(rs.getString("subject_description"));
       subjects.add(subjectDto);
-
       dto.setSubjects(subjects);
       return dto;
     }
