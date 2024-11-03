@@ -8,9 +8,19 @@ import java.util.Map;
 @Getter
 @Setter
 public class DashBoardTeacherDto {
-  private Long id;
-  private String teachersName;
-  private String teacherPhoneNumber;
+  private Long id;  // Add if you have an ID
+  private String name;
+  private String email;
+  private String contactNo; // Note: Adjusted to match Java conventions
   private String department;
-  private Map<String, Object> qualifications; // JSONB field as a Map
+  private String specialization;
+  private Map<String, Object> qualifications;// JSONB field as a Map
+
+  @Getter
+  @Setter
+  public static class Qualifications {
+    private String degree;
+    private String institution;
+    private int year;
+  }
 }
