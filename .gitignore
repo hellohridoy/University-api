@@ -34,3 +34,18 @@ out/
 .gradle
 build.gradle
 settings.gradle
+# Gradle files
+.gradle/
+build/
+# IntelliJ IDEA files
+.idea/
+*.iml
+
+# Compiled class files
+*.class
+
+# Temporary files
+*.tmp
+*.log
+*.bin
+*.lock
